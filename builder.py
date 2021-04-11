@@ -2,6 +2,7 @@ import os
 import shutil
 import logging
 from pathlib import Path
+from datetime import datetime
 
 import sass
 import jinja2
@@ -28,8 +29,16 @@ class Builder:
         dest = self._build.joinpath(rel)
         dest.parent.mkdir(parents=True, exist_ok=True)
         template = self._html.get_template(rel.as_posix())
+        now = datetime.utcnow()
         with open(dest, "w") as fd:
-            fd.write(template.render())
+            fd.write(
+                template.render(
+                    year=now.year,
+                    date=now.strftime("%Y-%m-%d %H:%M:%S UTC"),
+                    reflink=f"https://github.com/ceruleant/ceruleant.github.io/refs/something",
+                    refname="something",
+                )
+            )
         log.info(f"[html] {rel}")
 
     def build_sass(self, path: Path):
