@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/main.css">
     <title>{{ title }}</title>
   </head>
   <body>
+    {% block body %}
+    {% endblock %}
+    <script type="module" src="/js/theme.mjs"></script>
   </body>
 </html>

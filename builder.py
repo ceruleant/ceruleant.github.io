@@ -34,8 +34,16 @@ class Builder:
 
     def build_sass(self, path: Path):
         rel = path.relative_to(self._source)
-        dest = self._build.joinpath(rel)
+        dest = self._build.joinpath(rel).with_suffix(".css")
         dest.parent.mkdir(parents=True, exist_ok=True)
+        output = sass.compile(
+            filename=path.as_posix(),
+            output_style="compressed",
+            include_paths=[self._source.as_posix()],
+        )
+        with open(dest, "w") as fd:
+            fd.write(output)
+        log.info(f"[css] {rel}")
 
     def build_copy(self, path: Path):
         rel = path.relative_to(self._source)
@@ -52,11 +60,15 @@ class Builder:
         return self.build_copy(path)
 
     def build(self):
-        for root, _, files in os.walk(self._source):
+        for root, dirs, files in os.walk(self._source):
             for name in files:
                 if name.startswith("_"):
                     continue
                 self.build_path(Path(root).joinpath(name))
+            valid_dirs = set(filter(lambda d: not d.startswith("_"), dirs))
+            dirs.clear()
+            for d in valid_dirs:
+                dirs.append(d)
 
 
 def main():
