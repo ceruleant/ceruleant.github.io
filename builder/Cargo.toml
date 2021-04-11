@@ -1,9 +1,0 @@
-[package]
-name = "builder"
-version = "0.1.0"
-authors = ["Myles Hathcock <c3ruleant@gmail.com>"]
-edition = "2018"
-
-[dependencies]
-tera = "1.7"
-sass-rs = "0.2.2"

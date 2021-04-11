@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }}</title>
+  </head>
+  <body>
+    {% for script in development_scripts %}
+    <script type="module" src="{{ script|safe }}"></script>
+    {% endfor %}
+  </body>
+</html>
