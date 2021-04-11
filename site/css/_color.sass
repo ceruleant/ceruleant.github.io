@@ -1,6 +1,15 @@
-.theme-light
+\:root
+  // cerulean blue, according to wikipedia
+  --color-hue: 224
+
+// .theme-light
+\:root
   --color-bg: white
   --color-fg: black
+  --color-fg-light: hsl(var(--color-hue), 15%, 50%)
+  --color-fg-lighter: hsl(var(--color-hue), 15%, 75%)
+  --color-fg-lightest: hsl(var(--color-hue), 15%, 90%)
+  --color-link: hsl(var(--color-hue), 75%, 50%)
 
 .theme-dark
   --color-bg: rgb(0.125, 0.125, 0.125)
