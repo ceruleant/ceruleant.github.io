@@ -32,6 +32,7 @@ jobs:
         run: |
           git config user.name "Builder"
           git config user.email "c3ruleant@gmail.com"
+          git add .
           git -C gh-pages/ commit -am "Deploy ${{ github.sha }} to prod"
           git push origin gh-pages
           
