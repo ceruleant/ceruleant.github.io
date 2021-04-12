@@ -23,16 +23,17 @@ jobs:
       - name: Checkout GH Pages
         uses: actions/checkout@v2
         with:
-          path: gh-pages
+          path: deploy
           ref: gh-pages
       - name: Copy Built Site
         run: |
-          rsync -av --delete build/ gh-pages/
+          rsync -av --delete build/ deploy/
       - name: Push Site to Production
         run: |
-          git -C gh-pages/ config user.name "Builder"
-          git -C gh-pages/ config user.email "c3ruleant@gmail.com"
-          git -C gh-pages/ add .
-          git -C gh-pages/ commit -am "Deploy ${{ github.sha }} to prod"
-          git -C gh-pages/ push origin gh-pages
+          cd deploy/
+          git config user.name "Builder"
+          git config user.email "c3ruleant@gmail.com"
+          git add .
+          git commit -am "Deploy ${{ github.sha }} to prod"
+          git push -f origin gh-pages
           
