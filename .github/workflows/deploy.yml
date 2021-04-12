@@ -27,7 +27,7 @@ jobs:
           ref: gh-pages
       - name: Copy Built Site
         run: |
-          rsynv -av --delete build/ gh-pages/
+          rsync -av --delete build/ gh-pages/
       - name: Push Site to Production
         run: |
           git -C gh-pages/ commit -am "Deploy ${{ github.sha }} to prod"
