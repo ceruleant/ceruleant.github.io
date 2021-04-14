@@ -18,14 +18,14 @@ def git_current_sha() -> str:
     result = subprocess.check_output(
         f"git -C {DIR.as_posix()} rev-parse HEAD", shell=True
     )
-    return result.strip()
+    return result.decode().strip()
 
 
 def git_current_branch() -> str:
     result = subprocess.check_output(
         f"git -C {DIR.as_posix()} rev-parse --abbrev-ref HEAD", shell=True
     )
-    return result.strip()
+    return result.decode().strip()
 
 
 GIT_SHA = git_current_sha()
@@ -54,6 +54,7 @@ class Builder:
                 template.render(
                     year=now.year,
                     date=now.strftime("%Y-%m-%d %H:%M:%S UTC"),
+                    ref=GIT_SHA,
                     reflink=f"https://github.com/ceruleant/ceruleant.github.io/tree/{GIT_SHA}",
                     refname=f"{GIT_BRANCH}",
                 )
