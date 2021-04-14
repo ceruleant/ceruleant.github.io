@@ -1,6 +1,7 @@
 import os
 import shutil
 import logging
+import subprocess
 from pathlib import Path
 from datetime import datetime
 
@@ -11,6 +12,22 @@ DIR = Path(__file__).resolve().parent
 SOURCE = DIR.joinpath("site")
 BUILD = DIR.joinpath("build")
 log = logging.getLogger("site")
+
+
+def git_current_sha() -> str:
+    result = subprocess.check_output(f"git -C {DIR.parent.as_posix()} rev-parse HEAD")
+    return result.strip()
+
+
+def git_current_branch() -> str:
+    result = subprocess.check_output(
+        f"git -C {DIR.parent.as_posix()} rev-parse --abbrev-ref HEAD"
+    )
+    return result.strip()
+
+
+GIT_SHA = git_current_sha()
+GIT_BRANCH = git_current_branch()
 
 
 class Builder:
@@ -35,8 +52,8 @@ class Builder:
                 template.render(
                     year=now.year,
                     date=now.strftime("%Y-%m-%d %H:%M:%S UTC"),
-                    reflink=f"https://github.com/ceruleant/ceruleant.github.io/refs/something",
-                    refname="something",
+                    reflink=f"https://github.com/ceruleant/ceruleant.github.io/tree/{GIT_SHA}",
+                    refname=f"{GIT_BRANCH}",
                 )
             )
         log.info(f"[html] {rel}")
