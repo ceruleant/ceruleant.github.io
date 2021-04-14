@@ -15,13 +15,15 @@ log = logging.getLogger("site")
 
 
 def git_current_sha() -> str:
-    result = subprocess.check_output(f"git -C {DIR.parent.as_posix()} rev-parse HEAD")
+    result = subprocess.check_output(
+        f"git -C {DIR.parent.as_posix()} rev-parse HEAD", shell=True
+    )
     return result.strip()
 
 
 def git_current_branch() -> str:
     result = subprocess.check_output(
-        f"git -C {DIR.parent.as_posix()} rev-parse --abbrev-ref HEAD"
+        f"git -C {DIR.parent.as_posix()} rev-parse --abbrev-ref HEAD", shell=True
     )
     return result.strip()
 
