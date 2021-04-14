@@ -25,15 +25,14 @@ jobs:
         with:
           path: deploy
           ref: gh-pages
+
       - name: Copy Built Site
         run: |
           rsync -av --delete build/ deploy/
       - name: Push Site to Production
         run: |
-          cd deploy/
-          git config user.name "Builder"
-          git config user.email "c3ruleant@gmail.com"
-          git add .
-          git commit -am "Deploy ${{ github.sha }} to prod"
-          git push -f origin gh-pages
-          
+          git -C deploy/ config user.name "Builder"
+          git -C deploy/ config user.email "c3ruleant@gmail.com"
+          git -C deploy/ add .
+          git -C deploy/ commit -am "Deploy ${{ github.sha }} to prod"
+          git -C deploy/ push
