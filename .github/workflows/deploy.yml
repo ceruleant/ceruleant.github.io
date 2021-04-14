@@ -30,7 +30,7 @@ jobs:
 
       - name: Copy Built Site
         run: |
-          rsync -av --delete source/build/ deploy/
+          rsync -av --delete --exclude '.git/' source/build/ deploy/
       - name: Push Site to Production
         run: |
           git -C deploy/ config user.name "Builder"
