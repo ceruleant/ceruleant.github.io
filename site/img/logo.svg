@@ -26,7 +26,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="184.7213"
+     inkscape:cx="182.70099"
      inkscape:cy="297.92629"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -46,7 +46,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -61,17 +61,16 @@
        cx="57.930668"
        cy="214.48051"
        r="48.041698" />
-    <circle
-       style="fill:#2053d4;fill-opacity:1;stroke-width:0.26458332"
-       id="path819"
-       cx="68"
-       cy="228.99998"
-       r="50" />
-    <circle
-       style="fill:#3fc7df;fill-opacity:1;stroke-width:0.42487833"
-       id="path823"
-       cx="88.733498"
-       cy="229.51443"
-       r="29.399649" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.51356506px;line-height:1.25;font-family:Roboto;-inkscape-font-specification:Roboto;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.53783911"
+       x="22.765179"
+       y="256.40884"
+       id="text871"><tspan
+         sodipodi:role="line"
+         id="tspan869"
+         x="22.765179"
+         y="256.40884"
+         style="font-size:103.26511383px;stroke-width:0.53783911">m</tspan></text>
   </g>
 </svg>
