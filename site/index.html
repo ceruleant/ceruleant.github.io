@@ -1,28 +1,50 @@
-{% set title = "Ceruleant" %}
+{% set title = "About Myles" %}
 {% extends "_layout.html" %}
 {% block body %}
-<hgroup id="header">
-  <img
-    id="profile-picture"
-    src="/img/myles.jpg"
-    alt="A silly picture of me in a backwards hat in my car, making a funny face."/>
-  <h1>Myles Hathcock</h1>
-  <ul>
-    <li><a href="https://github.com/ceruleant">GitHub</a></li>
-    <li><a href="https://twitter.com/c3ruleant">@c3ruleant</a></li>
-    <li><a href="mailto:c3ruleant@gmail.com">Email</a></li>
-  </ul>
-</hgroup>
 <article>
-  <p>Welcome, reader. I am a software engineer residing
-  in Chicago, Illinois, USA. I currently work in FinTech, but have experience
-  in the Aerospace industry as well, which is what my formal education is in.</p>
-  <p>I have 10+ years of experience building high performance software (and
-  occasionally hardware) systems. This includes primarily C++ applications involving
-  strict latency requirements, high throughput requirements, and requiring careful
-  design of data structures, engineering processes, and more.</p>
-  <p>I regularly work with a variety of programming languages, though my favorites
-  when not subject to other constraints are probably Rust, Python, and Typescript. My hobbies include (work related) compression, distributed systems, and hardware design. Other (not work-related) hobbies include running/exercising, cooking, and singing (poorly).</p>
-  <p>Please enjoy my collection of projects on <a href="https://github.com/ceruleant">GitHub</a>, reach out to me on Twitter <a href="https://twitter.com/c3ruleant">@c3ruleant</a>, or <a href="mailto:c3ruleant@gmail.com">email me!</a> I'm friendly (I think) and I enjoy talking.</p>
+  <h1>About Myles</h1>
+  <img
+    id="profile"
+    src="/img/myles.png"
+    alt="Placeholder"
+  />
+  <p>Welcome, reader. My name is Myles Hathcock, this is my personal site
+  dedicated to primarily technical topics in programming, computer science,
+  engineering, and associated fields. I currently work as an engineer at a
+  proprietary trading firm based out of Chicago. I focus mostly on designing
+  and implementing algorithms and systems that process large volumes and
+  cardinalities of data.</p> <p>Beyond my work in the tech sector, I enjoy
+  spending time with my family and am an avid runner. Please feel free to reach
+  out to me with questions or comments on twitter or email or have a look at my
+  open-source projects.</p>
+
+  <table class="contact-links">
+    <tbody>
+      <tr>
+        <td>GitHub</td>
+        <td>
+          <code>
+            <a target="_blank" href="https://github.com/my1es">@my1es</a>
+          </code>
+        </td>
+      </tr>
+      <tr>
+        <td>Twitter</td>
+        <td>
+          <code>
+            <a target="_blank" href="https://twitter.com/__my1es">@__my1es</a>
+          </code>
+        </td>
+      </tr>
+      <tr>
+        <td>Email</td>
+        <td>
+          <code>
+            <a target="_blank" href="mailto:deter-some-scrapers@mail.com">mhathcock at google email</a>
+          </code>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </article>
 {% endblock %}

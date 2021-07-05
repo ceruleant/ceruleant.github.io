@@ -1,0 +1,11 @@
+{% set title = post.title %}
+{% extends "_layout.html" %}
+{% block body %}
+<article>
+  <hgroup class="post-header">
+    <h1>{{ post.title }}</h1>
+    <p>Posted on {{ post.date | dt }}.</p>
+  </hgroup>
+  {{ post.content | safe }}
+</article>
+{% endblock %}

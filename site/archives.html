@@ -1,0 +1,16 @@
+{% set title = "Archives" %}
+{% extends "_layout.html" %}
+{% block body %}
+<article>
+  <h1>Archives</h1>
+  <table class="archives">
+    <tbody>
+    {% for post in posts %}
+      <tr>
+        <td class="date">{{ post.date | dt }}</td><td class="link"><a href="/{{ post.url }}">{{ post.title }}</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</article>
+{% endblock %}
