@@ -44,6 +44,10 @@ def consume(obj: Dict[str, Any], name: str, *, convert=lambda x: x):
     return convert(value)
 
 
+def datetime_format(value: datetime, fmt: str = "%Y-%m-%d"):
+    return value.strftime(fmt)
+
+
 @dataclass
 class Post:
     path: Path
@@ -106,6 +110,7 @@ class Builder:
             undefined=jinja2.StrictUndefined,
             autoescape=jinja2.select_autoescape(["html", "xml"]),
         )
+        self._html.filters["dt"] = datetime_format
         self._development = development
         self._posts: List[Post] = list()
 

@@ -10,6 +10,7 @@
 @import "_typography"
 @import "_lists"
 @import "_tables"
+@import "_code"
 
 .container
   width: 100%
@@ -34,6 +35,11 @@ img#profile
   float: left
   max-width: 10rem
   margin-right: 1.5rem
+  margin-bottom: 1.5rem
+
+table.contact-links
+  code
+    background: var(--color-bg)
 
 .plain
   text-decoration: none
@@ -50,6 +56,17 @@ footer
 
   p
     margin: 0 0.5rem
+
+  code
+    background: var(--color-bg)
+
+hgroup.post-header
+  h1
+    margin-bottom: 0
+  p
+    color: var(--color-fg-light)
+    font-size: 1.2rem
+  margin-bottom: 2.5rem
 
 @media (min-width: 750px)
   body
