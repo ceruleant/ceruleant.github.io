@@ -12,7 +12,7 @@ import subprocess
 from pathlib import Path
 from datetime import datetime
 from dataclasses import dataclass
-from typing import Set, Dict, Any, Optional
+from typing import Set, Dict, Any, Optional, List
 
 
 DIR = Path(__file__).resolve().parent
@@ -35,7 +35,7 @@ RENDERER = mistune.create_markdown(renderer=Highlighter())
 
 
 def generate_url(path: Path):
-    return path.with_suffix(".html").stem
+    return path.with_suffix(".html").name
 
 
 def consume(obj: Dict[str, Any], name: str, *, convert=lambda x: x):
@@ -107,6 +107,7 @@ class Builder:
             autoescape=jinja2.select_autoescape(["html", "xml"]),
         )
         self._development = development
+        self._posts: List[Post] = list()
 
     def build_html(self, path: Path, dest: Optional[Path] = None, **kwargs):
         rel = path.relative_to(self._source)
@@ -123,6 +124,7 @@ class Builder:
                     ref=GIT_SHA,
                     reflink=f"https://github.com/my1es/my1es.github.io/tree/{GIT_SHA}",
                     refname=f"{GIT_BRANCH}",
+                    posts=self._posts,
                     **kwargs,
                 )
             )
@@ -161,12 +163,11 @@ class Builder:
         self.build_html(template_path, dest, post=post)
 
     def build(self):
-        posts = list()
         for path in self._content.iterdir():
             post = Post.load(path)
-            posts.append(post)
-        posts.sort(key=lambda p: p.date, reverse=True)
-        for post in posts:
+            self._posts.append(post)
+        self._posts.sort(key=lambda p: p.date, reverse=True)
+        for post in self._posts:
             self.build_post(post)
 
         for root, dirs, files in os.walk(self._source):
