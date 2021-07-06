@@ -10,6 +10,7 @@ import subprocess
 from pathlib import Path
 from datetime import datetime
 from dataclasses import dataclass
+from typing import Set, Dict, Any
 
 
 DIR = Path(__file__).resolve().parent
@@ -28,6 +29,9 @@ class Highlighter(mistune.HTMLRenderer):
         return "<pre><code>" + mistune.escape(code) + "</code></pre>"
 
 
+RENDERER = mistune.create_markdown(renderer=Highlighter())
+
+
 @dataclass
 class Post:
     path: Path
@@ -35,6 +39,8 @@ class Post:
     date: datetime
     title: str
     tags: Set[str]
+    extra: Dict[str, Any]
+    content: str
 
     @staticmethod
     def load(path: Path) -> "Post":
@@ -46,6 +52,17 @@ class Post:
             for key, value in line.split("=", 1)
             for line in meta.split("\n")
         }
+        return Post(
+            path=path,
+            url=generate_url(path),
+            date=consume(
+                meta, "date", convert=lambda v: datetime.strptime(v, "%Y-%m-%d")
+            ),
+            title=consume(meta, "title"),
+            tags=None,
+            extra=meta,
+            content=RENDERER(content),
+        )
 
 
 def git_current_sha() -> str:
