@@ -34,7 +34,7 @@ jobs:
       - name: Push Site to Production
         run: |
           git -C deploy/ config user.name "Builder"
-          git -C deploy/ config user.email "c3ruleant@gmail.com"
+          git -C deploy/ config user.email "invalid-personal-email@gmail.com"
           git -C deploy/ add .
           git -C deploy/ commit -am "Deploy ${{ github.sha }} to prod"
           git -C deploy/ push origin gh-pages

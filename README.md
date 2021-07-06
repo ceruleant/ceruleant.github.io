@@ -8,7 +8,7 @@ and [Sass](https://sass-lang.com/).
 * Jinja2
 * Sass & Libsass
 * Normalize CSS
-* Milligram CSS
+* Milligram CSS (inspiration)
 
 # License
 

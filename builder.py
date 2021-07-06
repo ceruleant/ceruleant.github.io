@@ -1,17 +1,51 @@
+import sass
+import jinja2
+import mistune
+import pygments
+
 import os
 import shutil
 import logging
 import subprocess
 from pathlib import Path
 from datetime import datetime
+from dataclasses import dataclass
 
-import sass
-import jinja2
 
 DIR = Path(__file__).resolve().parent
 SOURCE = DIR.joinpath("site")
+CONTENT = DIR.joinpath("content")
 BUILD = DIR.joinpath("build")
 log = logging.getLogger("site")
+
+
+class Highlighter(mistune.HTMLRenderer):
+    def block_code(self, code, lang=None):
+        if lang:
+            lexer = pygments.get_lexer_by_name(lang)
+            formatter = pygments.formatters.html.HtmlFormatter()
+            return pygments.highlight(code, lexer, formatter)
+        return "<pre><code>" + mistune.escape(code) + "</code></pre>"
+
+
+@dataclass
+class Post:
+    path: Path
+    url: str
+    date: datetime
+    title: str
+    tags: Set[str]
+
+    @staticmethod
+    def load(path: Path) -> "Post":
+        with open(path) as fd:
+            raw = fd.read()
+        meta, content = raw.split("\n---\n", 1)
+        meta = {
+            key.strip(): value.strip()
+            for key, value in line.split("=", 1)
+            for line in meta.split("\n")
+        }
 
 
 def git_current_sha() -> str:
@@ -33,8 +67,11 @@ GIT_BRANCH = git_current_branch()
 
 
 class Builder:
-    def __init__(self, source: Path, build: Path, development: bool = True):
+    def __init__(
+        self, source: Path, content: Path, build: Path, development: bool = True
+    ):
         self._source = source
+        self._content = content
         self._build = build
         self._html = jinja2.Environment(
             loader=jinja2.FileSystemLoader(self._source),
@@ -89,6 +126,9 @@ class Builder:
         return self.build_copy(path)
 
     def build(self):
+        for path in self._content.iterdir():
+            post = Post.load(path)
+
         for root, dirs, files in os.walk(self._source):
             for name in files:
                 if name.startswith("_"):

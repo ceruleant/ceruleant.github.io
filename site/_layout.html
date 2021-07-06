@@ -2,6 +2,10 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3/build/web/hack-subset.css">
     <link rel="stylesheet" href="/css/main.css">
     <title>{{ title }}</title>
   </head>
@@ -9,7 +13,7 @@
     <nav class="container">
       <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="/articles.html">Articles</a></li>
+        <li><a href="/archives.html">Archives</a></li>
       </ul>
     </nav>
     <main class="container">
@@ -17,8 +21,8 @@
       {% endblock %}
     </main>
     <footer class="container">
-      <p>Copyright {{ year }}, Myles Hathcock. Released under <a href="https://creativecommons.org/licenses/by-nc/2.0/">CC BY-NC</a> for writing and <a href="https://opensource.org/licenses/MIT">MIT license</a> for source code.</p>
-      <p>Built {{ date }} from <code>{{ refname }}</code> at <a href="{{ reflink }}">{{ ref }}</a>.</p>
+      <p>Copyright {{ year }}, Myles Hathcock. Unless otherwise noted, all writing is licensed under the <a href="https://creativecommons.org/licenses/by-nc/2.0/">CC BY-NC</a> and all source code is licensed under the <a href="https://opensource.org/licenses/MIT">MIT license</a>.</p>
+      <p>Built {{ date }} from <a href="{{ reflink }}"><code>{{ refname }}@{{ ref }}</code></a>.</p>
     </footer>
     <script type="module" src="/js/theme.mjs"></script>
   </body>
