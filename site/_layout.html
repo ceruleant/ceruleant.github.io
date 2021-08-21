@@ -2,17 +2,13 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hack-font/3.3.0/web/hack.min.css" integrity="sha512-XgCw4Srl8lC1ECwcaHwAU0WnxQwHkqmInzg9wJLtGB7DRuMaXPuK2k9WJ2AwRDGdrgK9eJpZl2hUlLi2WQssmw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/css/main.css">
     <title>{{ title }}</title>
   </head>
   <body>
     <nav class="container">
       <ul>
-        <li><a href="/">Home</a></li>
+        <li><a href="/">About</a></li>
         <li><a href="/archives.html">Archives</a></li>
       </ul>
     </nav>
@@ -20,10 +16,5 @@
       {% block body %}
       {% endblock %}
     </main>
-    <footer class="container">
-      <p>Copyright {{ year }}, Myles Hathcock. Unless otherwise noted, all writing is licensed under the <a href="https://creativecommons.org/licenses/by-nc/2.0/">CC BY-NC</a> and all source code is licensed under the <a href="https://opensource.org/licenses/MIT">MIT license</a>.</p>
-      <p>Built {{ date }} from <a href="{{ reflink }}"><code>{{ refname }}@{{ ref }}</code></a>.</p>
-    </footer>
-    <script type="module" src="/js/theme.mjs"></script>
   </body>
 </html>
