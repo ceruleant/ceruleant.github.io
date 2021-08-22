@@ -169,6 +169,8 @@ class Builder:
 
     def build(self):
         for path in self._content.iterdir():
+            if not path.suffix == ".md":
+                continue
             post = Post.load(path)
             self._posts.append(post)
         self._posts.sort(key=lambda p: p.date, reverse=True)
