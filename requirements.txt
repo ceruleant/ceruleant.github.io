@@ -1,6 +1,0 @@
-Jinja2==3.0.1
-libsass==0.21.0
-MarkupSafe==2.0.1
-mistune==2.0.0rc1
-Pygments==2.9.0
-six==1.16.0
