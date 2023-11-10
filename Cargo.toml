@@ -1,8 +1,0 @@
-[project]
-name = "my1es-dev-builder"
-authors = ["Myles Hathcock <me@my1es.dev>"]
-version = "0.0.1"
-edition = "2021"
-
-[dependencies]
-log = "0.4"

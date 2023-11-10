@@ -1,8 +1,0 @@
-title = "Implementing an HTTP Server"
-date = 2022-01-01
-tags = ["http", "python", "server"]
-audience = """\
-Those interested in learning about HTTP, those (relatively) new to "backend"
-software, etc. You'll get the most out of this article if you've programmed
-before or are at least aware of networking concepts, but it's not required.
-"""
