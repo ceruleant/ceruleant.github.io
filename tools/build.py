@@ -2,42 +2,12 @@ import json
 from pathlib import Path
 from tools import repo
 from collections import defaultdict
-from typing import Dict, Any, List, Set
+from typing import Dict, Set, List
 
 import toml
-from pydantic import BaseModel, Field
 
-
-class Page(BaseModel):
-    name: str
-    title: str
-    tags: List[str]
-    local_path: Path
-    url: str
-    description: str = ""
-
-    @staticmethod
-    def from_obj(path: Path, obj: Dict[str, Any]):
-        local_path = path.parent.joinpath(obj["source"])
-        if not local_path.exists():
-            raise RuntimeError(f"Page path {path} does not exist")
-        name = obj.get("name")
-        if name is None:
-            name = local_path.stem
-        if not name.endswith(".html"):
-            name += ".html"
-        return Page(
-            name=name,
-            title=obj["title"],
-            tags=sorted(set(map(lambda t: t.lower(), obj.get("tags", [])))),
-            local_path=local_path,
-            url=f"<root>/{name}",
-        )
-
-
-class SiteConfig(BaseModel):
-    pages: Dict[str, Page] = Field(default=dict())
-    tags: Dict[str, List[str]] = Field(default=dict())
+from tools.model import SiteConfig, Page
+from tools.ninja import Ninja
 
 
 def load_build_file(cfg: SiteConfig, path: Path):
@@ -73,9 +43,33 @@ def load_site_config() -> SiteConfig:
     return cfg
 
 
+def as_rel_paths(paths: List[Path], root: Path):
+    for path in paths:
+        yield f"$root/{path.relative_to(root).as_posix()}"
+
+
+def generate_ninja_file(cfg: SiteConfig, out: Path):
+    ninja = Ninja()
+    root = out.parent
+    ninja.var("root", root)
+    ninja.rule(
+        name="configure",
+        command="python tools/build.py",
+        generator=True,
+    )
+    ninja.build(
+        target="$root/build.ninja",
+        rule="configure",
+        deps=as_rel_paths(cfg.buildfile_paths(), root=root),
+    )
+
+    ninja.write(out)
+
+
 def main():
     cfg = load_site_config()
-    print(json.dumps(json.loads(cfg.json()), indent=2))
+    # print(json.dumps(json.loads(cfg.json()), indent=2))
+    generate_ninja_file(cfg, repo.ROOT.joinpath("build.ninja"))
 
 
 if __name__ == "__main__":
