@@ -1,6 +1,8 @@
+import json
 from pathlib import Path
 from tools import repo
-from typing import Dict, Set, Any
+from collections import defaultdict
+from typing import Dict, Any, List, Set
 
 import toml
 from pydantic import BaseModel, Field
@@ -9,13 +11,16 @@ from pydantic import BaseModel, Field
 class Page(BaseModel):
     name: str
     title: str
-    tags: Set[str]
+    tags: List[str]
     local_path: Path
     url: str
+    description: str = ""
 
     @staticmethod
     def from_obj(path: Path, obj: Dict[str, Any]):
-        local_path = path.joinpath(obj["source"])
+        local_path = path.parent.joinpath(obj["source"])
+        if not local_path.exists():
+            raise RuntimeError(f"Page path {path} does not exist")
         name = obj.get("name")
         if name is None:
             name = local_path.stem
@@ -24,14 +29,15 @@ class Page(BaseModel):
         return Page(
             name=name,
             title=obj["title"],
-            tags=set(obj.get("tags", [])),
+            tags=sorted(set(map(lambda t: t.lower(), obj.get("tags", [])))),
             local_path=local_path,
-            url="",
+            url=f"<root>/{name}",
         )
 
 
 class SiteConfig(BaseModel):
     pages: Dict[str, Page] = Field(default=dict())
+    tags: Dict[str, List[str]] = Field(default=dict())
 
 
 def load_build_file(cfg: SiteConfig, path: Path):
@@ -53,7 +59,12 @@ def load_build_file(cfg: SiteConfig, path: Path):
                 raise ValueError(f"Page by path {page.name} already exists: {existing}")
             cfg.pages[page.name] = page
 
-    print(f"{path=} {data=}")
+    tags: Dict[str, Set[str]] = defaultdict(set)
+    for page in cfg.pages.values():
+        for tag in page.tags:
+            tags[tag].add(page.name)
+    cfg.tags = {t: sorted(pages) for t, pages in tags.items()}
+    return cfg
 
 
 def load_site_config() -> SiteConfig:
@@ -64,7 +75,7 @@ def load_site_config() -> SiteConfig:
 
 def main():
     cfg = load_site_config()
-    print(cfg)
+    print(json.dumps(json.loads(cfg.json()), indent=2))
 
 
 if __name__ == "__main__":
