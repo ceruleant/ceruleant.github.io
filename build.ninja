@@ -1,0 +1,17 @@
+root = .
+pages = $root/pages
+builddir = $root/build
+html = $builddir/html
+index_file = $builddir/index.json
+all_content_paths = 
+
+rule page
+  command python $TOOLS/build_page.py $in --output $out --index $index_file
+  description PAGE $out
+
+rule build_index
+  command python $TOOLS/build_index.py $in --output $out
+  description INDEX $out
+
+build $index_file: build_index $index_file $ALL_CONTENT
+build $html/index.html: page $pages/index.md | $index_file
