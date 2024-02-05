@@ -1,8 +1,8 @@
-import json
+import os
 from pathlib import Path
 from tools import repo
 from collections import defaultdict
-from typing import Dict, Set, List
+from typing import Dict, Set, Iterable
 
 import toml
 
@@ -10,7 +10,16 @@ from tools.model import SiteConfig, Page
 from tools.ninja import Ninja
 
 
+def python_tool_sources():
+    for root, _, filenames in os.walk(repo.ROOT.joinpath("tools")):
+        for fname in filenames:
+            full = Path(root).joinpath(fname)
+            if full.suffix == ".py":
+                yield full
+
+
 def load_build_file(cfg: SiteConfig, path: Path):
+    cfg.buildfiles.append(path)
     with path.open() as file:
         data = toml.load(file)
     if includes := data.get("include"):
@@ -43,7 +52,7 @@ def load_site_config() -> SiteConfig:
     return cfg
 
 
-def as_rel_paths(paths: List[Path], root: Path):
+def as_rel_paths(paths: Iterable[Path], root: Path):
     for path in paths:
         yield f"$root/{path.relative_to(root).as_posix()}"
 
@@ -54,13 +63,14 @@ def generate_ninja_file(cfg: SiteConfig, out: Path):
     ninja.var("root", root)
     ninja.rule(
         name="configure",
-        command="python tools/build.py",
+        command="PYTHONPATH=$root python $root/tools/build.py",
         generator=True,
     )
     ninja.build(
-        target="$root/build.ninja",
+        name="$root/build.ninja",
         rule="configure",
-        deps=as_rel_paths(cfg.buildfile_paths(), root=root),
+        deps=list(as_rel_paths(cfg.buildfiles, root=root))
+        + list(as_rel_paths(python_tool_sources(), root=root)),
     )
 
     ninja.write(out)

@@ -34,3 +34,4 @@ class Page(BaseModel):
 class SiteConfig(BaseModel):
     pages: Dict[str, Page] = Field(default=dict())
     tags: Dict[str, List[str]] = Field(default=dict())
+    buildfiles: List[Path] = Field(default=list())
