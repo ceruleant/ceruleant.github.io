@@ -15,6 +15,9 @@ class Page(BaseModel):
     url: str
     description: str = ""
 
+    def rewrite_relative_paths(self, root: Path):
+        self.local_path = Path(f"$root/{self.local_path.relative_to(root).as_posix()}")
+
     @staticmethod
     def from_obj(path: Path, obj: Dict[str, Any]):
         local_path = path.parent.joinpath(obj["source"])
@@ -30,14 +33,20 @@ class Page(BaseModel):
             title=obj["title"],
             tags=sorted(set(map(lambda t: t.lower(), obj.get("tags", [])))),
             local_path=local_path,
-            url=f"<root>/{name}",
+            url=f"$root/{name}",
         )
 
 
 class SiteConfig(BaseModel):
     pages: Dict[str, Page] = Field(default=dict())
     tags: Dict[str, List[str]] = Field(default=dict())
-    buildfiles: List[Path] = Field(default=list())
+    buildfiles: List[Path] = Field(default=list(), exclude=True)
+
+    def rewrite_relative_paths(self, root: Path):
+        for page in self.pages.values():
+            page.rewrite_relative_paths(root)
+        for i, path in enumerate(self.buildfiles):
+            self.buildfiles[i] = Path(f"$root/{path.relative_to(root).as_posix()}")
 
 
 def load_build_file(cfg: SiteConfig, path: Path):

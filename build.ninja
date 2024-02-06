@@ -5,5 +5,5 @@ python = PYTHONPATH=$root python
 rule configure
     command = $python $root/tools/build.py
     generator = 1
-build $root/build.ninja: configure $root/build.toml $root/pages/build.toml $root/tools/repo.py $root/tools/build.py $root/tools/index.py $root/tools/model.py $root/tools/ninja.py
-build $builddir/site.json: configure $root/build.toml $root/pages/build.toml $root/tools/repo.py $root/tools/build.py $root/tools/index.py $root/tools/model.py $root/tools/ninja.py
+build $root/build.ninja: configure $root/tools/repo.py $root/tools/build.py $root/tools/index.py $root/tools/model.py $root/tools/ninja.py $root/build.toml $root/pages/build.toml
+build $builddir/site.json: configure $root/tools/repo.py $root/tools/build.py $root/tools/index.py $root/tools/model.py $root/tools/ninja.py $root/build.toml $root/pages/build.toml

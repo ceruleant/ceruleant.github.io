@@ -36,8 +36,8 @@ def build_configure(ninja: Ninja, cfg: SiteConfig, root: Path):
         generator=True,
     )
 
-    index_deps = list(as_rel_paths(cfg.buildfiles, root=root)) + list(
-        as_rel_paths(python_tool_sources(), root=root)
+    index_deps = list(as_rel_paths(python_tool_sources(), root=root)) + list(
+        map(str, cfg.buildfiles)
     )
 
     ninja.build(
@@ -77,6 +77,7 @@ def generate_index(cfg: SiteConfig, path: Path):
 
 def main():
     cfg = load_site_config()
+    cfg.rewrite_relative_paths(repo.ROOT)
     generate_ninja_file(cfg, repo.ROOT.joinpath("build.ninja"))
     generate_index(cfg, repo.ROOT.joinpath("build", "site.json"))
     # store the config as a json file so it can be loaded while
