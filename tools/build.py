@@ -40,21 +40,33 @@ def build_configure(ninja: Ninja, cfg: SiteConfig, root: Path):
         map(str, cfg.buildfiles)
     )
 
+    index_path = "$builddir/site.json"
+
     ninja.build(
-        name="$root/build.ninja",
+        names=[
+            "$root/build.ninja",
+            index_path,
+        ],
         rule="configure",
         deps=index_deps,
     )
 
-    return index_deps
+    return index_path
 
 
-def build_index(ninja: Ninja, cfg: SiteConfig, index_deps: List[str]):
-    ninja.build(
-        name="$builddir/site.json",
-        rule="configure",
-        deps=index_deps,
+def build_pages(ninja: Ninja, cfg: SiteConfig, index: str):
+    ninja.rule(
+        name="page",
+        command=f"$python $tools/page.py --name $pagename --source $in --output $out --index {index}",
     )
+    for page in cfg.pages.values():
+        ninja.build(
+            names=[f"$builddir/{page.name}"],
+            rule="page",
+            deps=[page.local_path.as_posix()],
+            implicit_deps=[index],
+            overrides={"pagename": page.name},
+        )
 
 
 def generate_ninja_file(cfg: SiteConfig, out: Path):
@@ -62,8 +74,8 @@ def generate_ninja_file(cfg: SiteConfig, out: Path):
     root = out.parent
     ninja.var("root", root)
     ninja.var("builddir", "$root/build")
-    index_deps = build_configure(ninja, cfg, root)
-    build_index(ninja, cfg, index_deps)
+    index_path = build_configure(ninja, cfg, root)
+    build_pages(ninja, cfg, index_path)
     ninja.write(out)
 
 
@@ -80,9 +92,6 @@ def main():
     cfg.rewrite_relative_paths(repo.ROOT)
     generate_ninja_file(cfg, repo.ROOT.joinpath("build.ninja"))
     generate_index(cfg, repo.ROOT.joinpath("build", "site.json"))
-    # store the config as a json file so it can be loaded while
-    # rendering pages etc. we do this even
-    # print(json.dumps(json.loads(cfg.json()), indent=2))
 
 
 if __name__ == "__main__":

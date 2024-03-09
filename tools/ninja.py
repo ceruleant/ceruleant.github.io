@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Any, IO, List
+from typing import Dict, Any, IO, List, Set
 from dataclasses import dataclass
 
 
@@ -22,17 +22,30 @@ rule {self.name}
 
 @dataclass
 class Target:
-    name: str
+    names: List[str]
     rule: str
     deps: List[str]
+    implicit_deps: List[str]
     overrides: Dict[str, str]
 
+    def __hash__(self):
+        return hash(tuple(self.names))
+
+    def __eq__(self, other: "Target"):
+        return sorted(self.names) == sorted(other.names)
+
+    def __lt__(self, other: "Target"):
+        return sorted(self.names) < sorted(other.names)
+
     def write(self, file: IO[str]):
+        name_expr = " ".join(sorted(self.names))
         file.write(
             f"""\
-build {self.name}: {self.rule} {' '.join(self.deps)}
+build {name_expr}: {self.rule} {' '.join(self.deps)} | {' '.join(self.implicit_deps)}
 """
         )
+        for key, value in self.overrides.items():
+            file.write(f"  {key} = {value}\n")
 
 
 class Ninja:
@@ -54,16 +67,21 @@ class Ninja:
             **kwargs,
         )
 
-    def build(self, *, name: str, rule: str, **kwargs):
-        existing = self._targets.get(name)
-        if existing is not None:
-            raise RuntimeError(f"Duplicate target {name=}")
-        self._targets[name] = Target(
-            name=name,
+    def build(self, *, names: List[str], rule: str, **kwargs):
+        for name in names:
+            existing = self._targets.get(name)
+            if existing is not None:
+                raise RuntimeError(f"Duplicate target {name=}")
+        kwargs.setdefault("overrides", {})
+        kwargs.setdefault("implicit_deps", [])
+
+        target = Target(
+            names=names,
             rule=rule,
-            overrides=dict(),
             **kwargs,
         )
+        for name in names:
+            self._targets[name] = target
 
     def write(self, out: Path):
         with out.open("w") as file:
@@ -71,5 +89,11 @@ class Ninja:
                 file.write(f"{var} = {value}\n")
             for rule in self._rules.values():
                 rule.write(file)
+
+            unique_targets: Set[Target] = set()
             for target in self._targets.values():
+                unique_targets.add(target)
+            print(unique_targets)
+            for target in sorted(unique_targets):
+                print(f"writing {target}")
                 target.write(file)
