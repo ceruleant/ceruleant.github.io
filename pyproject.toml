@@ -1,0 +1,12 @@
+[project]
+name = "my1es-github-io"
+version = "0.1.0"
+description = "Personal site for Myles Hathcock"
+readme = "README.md"
+requires-python = ">=3.12"
+
+dependencies = [
+  "pydantic",
+  "commonmark",
+  "jinja2>=3.1.4",
+]
