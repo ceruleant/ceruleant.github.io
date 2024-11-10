@@ -1,6 +1,8 @@
 import os
+import sys
 import time
 from argparse import ArgumentParser
+import traceback
 from dataclasses import dataclass
 from pathlib import Path
 import tomllib
@@ -13,7 +15,8 @@ import commonmark
 import sass
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
-ROOT = Path(__file__).resolve().parent
+FILE = Path(__file__).resolve()
+ROOT = FILE.parent
 BUILD = ROOT.joinpath("build")
 TEMPLATES = ROOT.joinpath("templates")
 CSS = ROOT.joinpath("css")
@@ -146,6 +149,14 @@ class Builder:
             )
         )
 
+    def files(self):
+        result: Set[Path] = set()
+        for target in self._targets.values():
+            for dep in target.deps:
+                result.add(dep)
+        result.add(FILE)
+        return result
+
     def build(self, *, force_rebuild: bool, parallelism: int):
         downstream: Dict[Path, Set[Path]] = defaultdict(set)
         building: Dict[Path, Any] = dict()
@@ -225,8 +236,60 @@ def build():
     return builder
 
 
-def serve():
-    pass
+class FilesystemWatcher:
+    def __init__(self):
+        self._paths: Dict[Path, int] = dict()
+
+    def update(self, *paths: Path):
+        added: Set[Path] = set()
+        for path in paths:
+            added.add(path)
+            self._paths[path] = path.stat().st_mtime_ns
+        to_remove = set(self._paths.keys()) - added
+        for path in to_remove:
+            del self._paths[path]
+
+    def wait(self) -> Set[Path]:
+        modified: Set[Path] = set()
+        while True:
+            for path, mtime in self._paths.items():
+                sample = path.stat().st_mtime_ns
+                if sample > mtime:
+                    modified.add(path)
+                    self._paths[path] = sample
+            if len(modified):
+                return modified
+            time.sleep(0.1)
+
+
+def serve(**kwargs):
+    def run_http_server():
+        pass
+
+    watcher = FilesystemWatcher()
+    builder = build()
+    watcher.update(*builder.files())
+    rexec = False
+
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        pool.submit(run_http_server)
+
+        while True:
+            try:
+                builder.build(
+                    force_rebuild=False,
+                    parallelism=1,
+                )
+                watcher.update(*builder.files())
+            except Exception:
+                traceback.print_exc()
+            if FILE in watcher.wait():
+                # re-exec after tearing down the threadpool
+                rexec = True
+                break
+
+    if rexec:
+        os.execv(sys.executable, sys.argv)
 
 
 def build_once(force_rebuild: bool):
