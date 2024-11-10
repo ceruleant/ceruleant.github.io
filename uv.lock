@@ -75,7 +75,6 @@ dependencies = [
     { name = "jinja2" },
     { name = "libsass" },
     { name = "pydantic" },
-    { name = "pyinotify" },
 ]
 
 [package.metadata]
@@ -84,7 +83,6 @@ requires-dist = [
     { name = "jinja2", specifier = ">=3.1.4" },
     { name = "libsass", specifier = ">=0.23.0" },
     { name = "pydantic" },
-    { name = "pyinotify", specifier = ">=0.9.6" },
 ]
 
 [[package]]
@@ -135,12 +133,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/d1/58/5305e723d9fcdf1c5a655e6a4cc2a07128bf644ff4b1d98daf7a9dbf57da/pydantic_core-2.23.4-cp313-none-win32.whl", hash = "sha256:3d5639516376dce1940ea36edf408c554475369f5da2abd45d44621cb616f769", size = 1738360 },
     { url = "https://files.pythonhosted.org/packages/a5/ae/e14b0ff8b3f48e02394d8acd911376b7b66e164535687ef7dc24ea03072f/pydantic_core-2.23.4-cp313-none-win_amd64.whl", hash = "sha256:5a1504ad17ba4210df3a045132a7baeeba5a200e930f57512ee02909fc5c4cb5", size = 1919411 },
 ]
-
-[[package]]
-name = "pyinotify"
-version = "0.9.6"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e3/c0/fd5b18dde17c1249658521f69598f3252f11d9d7a980c5be8619970646e1/pyinotify-0.9.6.tar.gz", hash = "sha256:9c998a5d7606ca835065cdabc013ae6c66eb9ea76a00a1e3bc6e0cfe2b4f71f4", size = 60998 }
 
 [[package]]
 name = "typing-extensions"

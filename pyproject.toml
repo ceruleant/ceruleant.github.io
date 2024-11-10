@@ -10,5 +10,4 @@ dependencies = [
   "commonmark",
   "jinja2>=3.1.4",
   "libsass>=0.23.0",
-  "pyinotify>=0.9.6",
 ]
