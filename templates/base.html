@@ -3,14 +3,23 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=content-width, initial-scale=1">
-    <meta name="description" content="{{ this.description }}">
+    <meta name="description" content="{{ meta.description }}">
     <link rel="stylesheet" href="css/style.css">
-    <title>{{ this.title }}</title>
+    <title>{{ meta.title }}</title>
     <meta id="meta-theme-color" name="theme-color" content="">
   </head>
   <body>
+    <nav>
+      <ul>
+        <li><a href="/">Home/Myles</a></li>
+        <li><a href="/">Archives</a></li>
+        <li><button>⚙</button></li>
+      </ul>
+    </nav>
+    <article>
     {% block content %}
     {% endblock %}
+    </article>
     <script src="js/theme.mjs" type="module"></script>
   </body>
 </html>
