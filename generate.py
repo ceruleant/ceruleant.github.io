@@ -228,7 +228,7 @@ def build():
 
     builder.css(
         dest="main.css",
-        source=CSS.joinpath("main.scss"),
+        source=CSS.joinpath("main.sass"),
     )
 
     builder.page(ROOT.joinpath("pages", "index.md"))
@@ -264,7 +264,22 @@ class FilesystemWatcher:
 
 def serve(**kwargs):
     def run_http_server():
-        pass
+        import http.server
+        import socketserver
+
+        os.chdir(BUILD)
+        port = 19001
+        with socketserver.TCPServer(
+            ("", port),
+            http.server.SimpleHTTPRequestHandler,
+        ) as http:
+            print(f"Dev server live at :{port}")
+            http.allow_reuse_address = True
+            http.serve_forever()
+
+    def handle_server_done(fut: Future):
+        fut.result()
+        raise RuntimeError(f"HTTP Server exited without an exception")
 
     watcher = FilesystemWatcher()
     builder = build()
@@ -272,7 +287,7 @@ def serve(**kwargs):
     rexec = False
 
     with ThreadPoolExecutor(max_workers=1) as pool:
-        pool.submit(run_http_server)
+        pool.submit(run_http_server).add_done_callback(handle_server_done)
 
         while True:
             try:
@@ -289,7 +304,9 @@ def serve(**kwargs):
                 break
 
     if rexec:
-        os.execv(sys.executable, sys.argv)
+        print(f"Reloading self...")
+        sys.stdout.flush()
+        os.execv(sys.executable, [sys.executable, *sys.argv])
 
 
 def build_once(force_rebuild: bool):
