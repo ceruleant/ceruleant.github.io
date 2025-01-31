@@ -1,0 +1,7 @@
+root = /home/myles/projects/my1es.github.io
+
+rule configure
+  command = python $root/configure.py
+  generator = 1
+
+build $root/build.ninja: configure  $root/configure.py

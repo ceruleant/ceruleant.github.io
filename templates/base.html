@@ -3,22 +3,35 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=content-width, initial-scale=1">
-    <meta name="description" content="{{ meta.description }}">
+    <meta name="description" content="{{ page.description }}">
+    <meta name="author" content="{{ site.author }}">
+    <meta name="robots" content="index,follow">
+    <meta name="date" content="{{ page.date }}">
+    <meta property="og:title" content="{{ page.title }}">
+    <meta property="og:url" content="{{ page.permalink }}">
+    <meta property="og:image" content="{{ page.opengraph_image_url }}">
+    <meta property="og:type" content="article">
+    <meta property="og:description" content="{{ page.description }}">
     <link rel="stylesheet" href="/main.css">
-    <title>{{ meta.title }}</title>
+    <link rel="canonical" href="{{ page.permalink }}">
+    <link rel="alternate" type="application/atom+xml" href="{{ site.atom_feed }}">
+    <title>{{ page.title }}</title>
+    {{!
+    TODO: need to implement theme switching with a bit of js
+    !}}
     <meta id="meta-theme-color" name="theme-color" content="">
   </head>
   <body>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="/">Archives</a></li>
-        <li><button>⚙</button></li>
+        <li><a href="/posts">Posts</a></li>
+        <li><a href="/projects">Projects</a></li>
+        <li><a href="/about">About</a></li>
       </ul>
     </nav>
     <main>
-    {% block content %}
-    {% endblock %}
+      {{ page.content }}
     </main>
     <script src="js/theme.mjs" type="module"></script>
   </body>
