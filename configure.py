@@ -4,6 +4,8 @@ from typing import Optional, List, Union, Tuple, Dict, Any
 
 
 ROOT = Path(__file__).resolve().parent
+PAGES = ROOT.joinpath("pages")
+POSTS = ROOT.joinpath("posts")
 
 StringArray = Union[str, List[str], Tuple[str]]
 
@@ -14,7 +16,7 @@ def normalize_string_array(arr: StringArray) -> List[str]:
     elif isinstance(arr, (list, tuple)):
         return [normalize_string_array(e) for e in arr]
     else:
-        raise ValueError(f"StringArray input not recognized: '{arr}'")
+        return str(arr)
 
 
 def normalize_optional_string_array(arr: Optional[StringArray]) -> List[str]:
@@ -140,6 +142,10 @@ class NinjaBuilder:
 
 
 def build_site(ninja: NinjaBuilder):
+    #
+    # site/tools setup
+    #
+
     ninja.var(
         name="builddir",
         value=ROOT.joinpath("build"),
@@ -152,28 +158,51 @@ def build_site(ninja: NinjaBuilder):
         name="tool",
         value="$builddir/tool.bin",
     )
+
     ninja.rule(
         name="pybin",
         command="$root/tools/link_binary.py $in $out",
         description="pybin",
         depfile="$out.d",
     )
+
     ninja.build(
         outputs="$tool",
         rule="pybin",
         inputs="$root/tools/main.py",
     )
+
+    #
+    # Content
+    #
+
+    metadata = ROOT.joinpath("site.toml")
+    pages = [
+        PAGES.joinpath("about.md"),
+        PAGES.joinpath("index.html"),
+        PAGES.joinpath("posts.html"),
+        PAGES.joinpath("projects.html"),
+    ]
+    posts = [
+        POSTS.joinpath("jit_compiler.md"),
+        POSTS.joinpath("mandelbrot_set_visualizer.md"),
+        POSTS.joinpath("ans.md"),
+    ]
+
+    #
+    # site analyze setup (json/feeds etc.)
+    #
+
     ninja.rule(
         name="analyze",
-        command="$tool analyze $in --output $out --depfile $out.d",
+        command="$tool analyze $in --output $out",
         description="analyze",
-        depfile="$out.d",
     )
-
-    # ninja.build(
-    #     outputs="$builddir/.private/site.json",
-    #     rule="analyze",
-    # )
+    ninja.build(
+        outputs="$builddir/site.json",
+        rule="analyze",
+        implicit=[metadata, *pages, *posts],
+    )
 
     # ninja.rule(
     #     name="template",

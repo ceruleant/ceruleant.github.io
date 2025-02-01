@@ -1,7 +1,7 @@
-title = "myles.site"
-path = "index.html"
-template = "page.html"
+type = "page"
+title = "About Myles"
 description = "About Myles"
+
 ---
 
 # Myles Hathcock

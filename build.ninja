@@ -10,6 +10,10 @@ rule pybin
   command = $root/tools/link_binary.py $in $out
   description = pybin
   depfile = $out.d
+rule analyze
+  command = $tool analyze $in --output $out
+  description = analyze
 
 build $root/build.ninja: configure  $root/configure.py
 build $tool: pybin $root/tools/main.py 
+build $builddir/site.json: analyze  /home/myles/projects/my1es.github.io/site.toml /home/myles/projects/my1es.github.io/pages/about.md /home/myles/projects/my1es.github.io/pages/index.html /home/myles/projects/my1es.github.io/pages/posts.html /home/myles/projects/my1es.github.io/pages/projects.html /home/myles/projects/my1es.github.io/posts/jit_compiler.md /home/myles/projects/my1es.github.io/posts/mandelbrot_set_visualizer.md /home/myles/projects/my1es.github.io/posts/ans.md
