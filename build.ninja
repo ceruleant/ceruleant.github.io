@@ -1,7 +1,15 @@
 root = /home/myles/projects/my1es.github.io
+builddir = /home/myles/projects/my1es.github.io/build
+site = $builddir/site
+tool = $builddir/tool.bin
 
 rule configure
   command = python $root/configure.py
   generator = 1
+rule pybin
+  command = $root/tools/link_binary.py $in $out
+  description = pybin
+  depfile = $out.d
 
 build $root/build.ninja: configure  $root/configure.py
+build $tool: pybin $root/tools/main.py 

@@ -140,7 +140,51 @@ class NinjaBuilder:
 
 
 def build_site(ninja: NinjaBuilder):
-    pass
+    ninja.var(
+        name="builddir",
+        value=ROOT.joinpath("build"),
+    )
+    ninja.var(
+        name="site",
+        value="$builddir/site",
+    )
+    ninja.var(
+        name="tool",
+        value="$builddir/tool.bin",
+    )
+    ninja.rule(
+        name="pybin",
+        command="$root/tools/link_binary.py $in $out",
+        description="pybin",
+        depfile="$out.d",
+    )
+    ninja.build(
+        outputs="$tool",
+        rule="pybin",
+        inputs="$root/tools/main.py",
+    )
+    ninja.rule(
+        name="analyze",
+        command="$tool analyze $in --output $out --depfile $out.d",
+        description="analyze",
+        depfile="$out.d",
+    )
+
+    # ninja.build(
+    #     outputs="$builddir/.private/site.json",
+    #     rule="analyze",
+    # )
+
+    # ninja.rule(
+    #     name="template",
+    #     command="$root/tools/template.py $in --output $out --depfile",
+    #     description="template",
+    # )
+    # ninja.build(
+    #     outputs="$builddir/index.html",
+    #     rule="template",
+    #     inputs="$root/pages/index.html",
+    # )
 
 
 def main():
