@@ -13,7 +13,18 @@ rule pybin
 rule analyze
   command = $tool analyze $in --output $out
   description = analyze
+rule template
+  command = $tool template --site $builddir/site.json $in --output $out --depfile $out.d
+  description = template
+  depfile = $out.d
 
-build $root/build.ninja: configure  $root/configure.py
-build $tool: pybin $root/tools/main.py 
-build $builddir/site.json: analyze  /home/myles/projects/my1es.github.io/site.toml /home/myles/projects/my1es.github.io/pages/about.md /home/myles/projects/my1es.github.io/pages/index.html /home/myles/projects/my1es.github.io/pages/posts.html /home/myles/projects/my1es.github.io/pages/projects.html /home/myles/projects/my1es.github.io/posts/jit_compiler.md /home/myles/projects/my1es.github.io/posts/mandelbrot_set_visualizer.md /home/myles/projects/my1es.github.io/posts/ans.md
+build $root/build.ninja: configure  | $root/configure.py
+build $tool: pybin $root/tools/main.py | 
+build $builddir/site.json: analyze /home/myles/projects/my1es.github.io/site.toml /home/myles/projects/my1es.github.io/pages/about.md /home/myles/projects/my1es.github.io/pages/index.html /home/myles/projects/my1es.github.io/pages/posts.html /home/myles/projects/my1es.github.io/pages/projects.html /home/myles/projects/my1es.github.io/posts/jit_compiler.md /home/myles/projects/my1es.github.io/posts/mandelbrot_set_visualizer.md /home/myles/projects/my1es.github.io/posts/ans.md | 
+build $builddir/about.html: template /home/myles/projects/my1es.github.io/pages/about.md | $builddir/site.json
+build $builddir/index.html: template /home/myles/projects/my1es.github.io/pages/index.html | $builddir/site.json
+build $builddir/posts.html: template /home/myles/projects/my1es.github.io/pages/posts.html | $builddir/site.json
+build $builddir/projects.html: template /home/myles/projects/my1es.github.io/pages/projects.html | $builddir/site.json
+build $builddir/posts/jit_compiler.html: template /home/myles/projects/my1es.github.io/posts/jit_compiler.md | $builddir/site.json
+build $builddir/posts/mandelbrot_set_visualizer.html: template /home/myles/projects/my1es.github.io/posts/mandelbrot_set_visualizer.md | $builddir/site.json
+build $builddir/posts/ans.html: template /home/myles/projects/my1es.github.io/posts/ans.md | $builddir/site.json

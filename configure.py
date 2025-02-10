@@ -14,9 +14,12 @@ def normalize_string_array(arr: StringArray) -> List[str]:
     if isinstance(arr, str):
         return arr.split()
     elif isinstance(arr, (list, tuple)):
-        return [normalize_string_array(e) for e in arr]
+        res = list()
+        for e in arr:
+            res.extend(normalize_string_array(e))
+        return res
     else:
-        return str(arr)
+        return str(arr).split()
 
 
 def normalize_optional_string_array(arr: Optional[StringArray]) -> List[str]:
@@ -57,7 +60,7 @@ class Build:
     def serialize(self) -> List[str]:
         lines: List[str] = list()
         lines.append(
-            f"build {' '.join(self.outputs)}: {self.rule} {' '.join(self.inputs)} {' '.join(self.implicit)}"
+            f"build {' '.join(self.outputs)}: {self.rule} {' '.join(self.inputs)} | {' '.join(self.implicit)}"
         )
         for key, var in self.variables.items():
             lines.append(f"  {key} = {var}")
@@ -201,19 +204,34 @@ def build_site(ninja: NinjaBuilder):
     ninja.build(
         outputs="$builddir/site.json",
         rule="analyze",
-        implicit=[metadata, *pages, *posts],
+        inputs=[metadata, *pages, *posts],
     )
 
-    # ninja.rule(
-    #     name="template",
-    #     command="$root/tools/template.py $in --output $out --depfile",
-    #     description="template",
-    # )
-    # ninja.build(
-    #     outputs="$builddir/index.html",
-    #     rule="template",
-    #     inputs="$root/pages/index.html",
-    # )
+    #
+    # Html Content
+    #
+
+    ninja.rule(
+        name="template",
+        command="$tool template --site $builddir/site.json $in --output $out --depfile $out.d",
+        description="template",
+        depfile="$out.d",
+    )
+
+    for page in pages:
+        ninja.build(
+            outputs=f"$builddir/{page.stem}.html",
+            rule="template",
+            inputs=page,
+            implicit="$builddir/site.json",
+        )
+    for post in posts:
+        ninja.build(
+            outputs=f"$builddir/posts/{post.stem}.html",
+            rule="template",
+            inputs=post,
+            implicit="$builddir/site.json",
+        )
 
 
 def main():

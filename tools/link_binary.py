@@ -11,7 +11,7 @@ def main():
     with output_path.open("w") as fo:
         fo.write(f"""\
 #!/bin/bash
-exec uv run {input_path} "$@"
+exec uv run {input_path} $@
 """)
     output_path.chmod(0o755)
 
